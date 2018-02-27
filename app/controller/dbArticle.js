@@ -42,8 +42,14 @@ class dbArticleController extends Controller{
 	}
 	async create(){
 		const {MArticle} = this.ctx.model;
-		const SFile = this.ctx.service.sFile;
-		const {img, title, segment, content} = await SFile.upload(this.ctx);
+		const {img, title, segment, content} = this.ctx.request.body;
+		const article = await MArticle.findOne({
+			where:{title},
+			attributes: ["title"],
+		});
+		if(article){
+			this.ctx.throw(404, "article already exist");
+		}
 		await MArticle.create({img, title, segment, content});
 		//console.log(file);
 		const updateJson = {
@@ -114,7 +120,7 @@ class dbArticleController extends Controller{
 			articles_detail.push(article_detail);
 		}
 		//this.ctx.body = articles_detail;
-		await this.ctx.render('article', {
+		await this.ctx.render('/dashboard/article', {
 			"articles": articles_detail,
 			"page": id,
 			"pageCount":pageCount
@@ -130,6 +136,7 @@ class dbArticleController extends Controller{
 	async uploadImg(){
 		const SFile = this.ctx.service.sFile;
 		const img = await SFile.uploadOSS(this.ctx);
+		console.log("img", img);
 		this.ctx.body = img;
 	}
 }

@@ -137,7 +137,7 @@ class articleController extends Controller{
 		});
 	}
 	async pageShow(){
-		const {MArticel} = this.ctx.model;
+		const {MArticle} = this.ctx.model;
 		const {id} = this.ctx.request.body;
 		const limit = 10;
 		let offset = 0;
