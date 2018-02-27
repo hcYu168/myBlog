@@ -78,29 +78,18 @@ class sFileService extends Service{
 		const uploadUrl = `https://blogt.oss-cn-beijing.aliyuncs.com/${fileName}`;
 		console.log("uploadUrl", uploadUrl);
 		return {Authorization, uploadUrl};
-	}	
+	}
+
 	async uploadOSS(ctx){
 		const parts = ctx.multipart();
 	    let part;
+        let result="";
 	    while ((part = await parts()) != null) {
 	      if (part.length) {
-	        // arrays are busboy fields
-	        /*console.log("1111111111111");
-	        console.log('field: ' + part[0]);
-	        console.log('value: ' + part[1]);
-	        console.log('valueTruncated: ' + part[2]);
-	        console.log('fieldnameTruncated: ' + part[3]);*/
 	      } else {
 	        if (!part.filename) {
-	          // user click `upload` before choose a file,
-	          // `part` will be file stream, but `part.filename` is empty
-	          // must handler this, such as log error.
 	          return;
 	        }
-	        /*console.log("2222222222222");
-	        // otherwise, it's a stream
-	        console.log('encoding: ' + part.encoding);
-	        console.log('mime: ' + part.mime);*/
 	        console.log('field: ' + part.fieldname);
 	        console.log('filename: ' + part.filename);
         	const client = new OSS({
@@ -109,14 +98,15 @@ class sFileService extends Service{
 	          	accessKeySecret: this.app.config.aliyun.accessKeySecret,
 	          	bucket: "blogt"
         	});
-        	let result;
 	        try {
-	        	co(function* () {
+	        	const picPath = path.join(__dirname,"../public/upload/")+part.filename;
+				part.pipe(fs.createWriteStream(picPath));
+	        	result = co(function* () {
 				   // use 'chunked encoding'
 					const stream = fs.createReadStream(path.join(__dirname,"../public/upload/")+part.filename);
-					result = yield client.putStream('/blogt/'+part.filename, stream);
-					console.log(result);
-				  
+					//fs.pipe(stream);
+					const result2 = yield client.putStream(part.filename, stream);
+					return result2;
 				}).catch(function (err) {
 				    console.log(err);
 				});
@@ -126,7 +116,7 @@ class sFileService extends Service{
 	        }
 	      }
 	    }
-	    return result;
+		return result;
 	}
 }
 module.exports= sFileService
