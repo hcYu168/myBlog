@@ -1,19 +1,4 @@
-const LocalStrategy = require('passport-local').Strategy;
 module.exports = app => {
-    /*app.passport.use(new LocalStrategy({
-        passReqToCallback: true,
-    }, (req, username, password, done) => {
-        // format user
-        const user = {
-            provider: 'local',
-            username,
-            password,
-        };
-        debug('%s %s get user: %j', req.method, req.url, user);
-        console.log("user", user);
-        app.passport.doVerify(req, user, done);
-    }));*/
-
     app.passport.verify(async (ctx, user) => {
         console.log(user.profile._json.email);
         console.log(user);
