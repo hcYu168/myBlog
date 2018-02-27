@@ -100,6 +100,9 @@
                                 <li>
                                     <a href="/blog/dashboard/user">用户列表</a>
                                 </li>
+                                <li>
+                                    <a href="/blog/dashboard/articleType">文章类别</a>
+                                </li>
                             </ul>
                         </li>
                         <!-- <li id="auth">
@@ -147,7 +150,7 @@
                             <td><%= articles[i].createTime%></td>
                             <td>
                                 <a href="/blog/dashboard/updateArticle/<%= articles[i].id %>">编辑</a>|
-                                <a href="javascript:void(0);" onclick="delArticle(<%= articles[i].id %>)" id="del<%= articles[i].id %>">删除</a>|
+                                <a href="/blog/dashboard/article/<%= articles[i].id %>" class="del">删除</a>|
                                 <a href="/blog/dashboard/comment/<%= articles[i].id %>">查看评论</a>
                             </td>
                         <tr>
@@ -160,29 +163,29 @@
                   <ul class="pagination">
                     <% if(page > 1){%>
                         <li>
-                          <a href="/xianbrand/article/<%= page-1 %>" aria-label="Previous">
+                          <a href="/blog/dashboard/article/<%= page-1 %>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                           </a>
                         </li>
                     <% }else{ %>
                         <li>
-                          <a href="/xianbrand/article/<%= page %>" aria-label="Previous">
+                          <a href="/blog/dashboard/article/<%= page %>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                           </a>
                         </li>
                     <% }%>
                     <%for(var i=1; i<=pageCount; i++){%>
-                        <li><a href="/xianbrand/article/<%= i %>"><%= i %></a></li>
+                        <li><a href="/blog/dashboard/article/<%= i %>"><%= i %></a></li>
                     <% }%>
                     <% if(page < pageCount){%>
                         <li>
-                          <a href="/xianbrand/article/<%= page+1 %>" aria-label="Next">
+                          <a href="/blog/dashboard/article/<%= page+1 %>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                           </a>
                         </li>
                     <% }else{ %>
                         <li>
-                          <a href="/xianbrand/article/<%= page %>" aria-label="Next">
+                          <a href="/blog/dashboard/article/<%= page %>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                           </a>
                         </li>
@@ -200,14 +203,10 @@
             $('#add').click(function(){
                 window.location.href= "/blog/dashboard/addArticle"
             });
-        });
-        function delArticle(id){
-           // var url = this.url;
-            var del = "#del"+id;
-            $(del).click(function(){
-                //event.preventDefault();
+            $(".del").on("click", function(event){
+                event.preventDefault();
                 $.ajax({
-                    url: "/blog/dashboard/article/"+id,
+                    url: this.href,
                     type: "DELETE",
                     success: function(data){
                         window.location.href= "/blog/dashboard/article"
@@ -218,8 +217,8 @@
                         console.log(err);
                     }
                 });
-            });
-        }
+            })
+        });
     </script>
     <!-- jQuery -->
     <script src="/public/vendor/jquery/jquery.min.js"></script>

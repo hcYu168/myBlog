@@ -103,6 +103,9 @@
                                 <li>
                                     <a href="/blog/dashboard/user">用户列表</a>
                                 </li>
+                                <li>
+                                    <a href="/blog/dashboard/articleType">文章类别</a>
+                                </li>
                             </ul>
                         </li>
                         <!-- <li id="auth">
@@ -148,9 +151,10 @@
 
     </div>
     <script type="text/javascript">
-       // var content = UE.getEditor('editor').getContent();
+        var ue = UE.getEditor('editor');  
+        //var content = ue.getContent();
         $(document).ready(function(){
-           /* $("#upload").click(function(){
+            /*$("#upload").click(function(){
                 var formData = new FormData();
                 var img = document.getElementById("img");
                 formData.append("img", img.files[0]);
@@ -172,8 +176,11 @@
                 });
             })*/
             $("#upload").click(function(){
-                var formData = new FormData();
-                var img = document.getElementById("img");
+                const formData = new FormData();
+                const img = document.getElementById("img");
+                const title = $("#title").val();
+                const segment = $("#segment").val();
+                const content = UE.getEditor('editor').getContent();
                 formData.append("img", img.files[0]);
                 $.ajax({
                     url: "/blog/uploadImg",
@@ -183,6 +190,18 @@
                     contentType: false,
                     success: function(data){
                         console.log(data);
+                        $.post("/blog/dashboard/article",
+                            {
+                                "img": data.url,
+                                "title": title,
+                                "segment": segment,
+                                "content":content
+                            },function(result){
+                                alert("上传成功");
+                                if(result.info){
+                                    window.location.href = "/blog/dashboard/article";
+                                }
+                        });
                     },
                     error: function(err){
                         console.log(err);
@@ -203,10 +222,6 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="/public/dist/js/sb-admin-2.js"></script>
-    
-    <script type="text/javascript">
-        var ue = UE.getEditor('editor');  
-    </script>
 </body>
 
 </html>
