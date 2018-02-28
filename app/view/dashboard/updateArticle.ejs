@@ -141,6 +141,14 @@
                         <p style="margin-left: 20%">文段：</p>
                         <p style="margin-left: 23%"><textarea id="segment" name="segment" rows="5" cols="50"><%=article_detail.segment %></textarea></p>
                         <p style="margin-left: 5%"><script id="editor" type="text/plain" style="width:1024px;height:500px;"></script></p>
+                        <p style="margin-left: 20%">
+                            <select id="articleType" style="width: 16%; border-radius:3px; ">
+                                <option id="<%= article_detail.id%>"><%= article_detail.name%></option>
+                                <% for(let i=0; i< articleType.length; i++){ %>
+                                    <option id=<%= articleType[i].id %>><%= articleType[i].name %></option>
+                                <% } %>
+                            </select>
+                        </p>
                         <button class="btn btn-large btn-primary" type="button" id="upload" style="margin-left: 30%; margin-top: 1%">提交</button>
                     </form>
                 </div>
@@ -157,6 +165,7 @@
                 var img = '';
                 var img_src = $("#img")[0].src;
                 var new_img = $("#new_img").val();
+                var typesId = $("#articleType option:selected").attr("id");
                 if(new_img == ""){
                     img = img_src;
                     $.ajax({
@@ -165,7 +174,8 @@
                         data:{
                             "title": $("#title").val(),
                             "segment" : $("#segment").val(),
-                            "content": UE.getEditor('editor').getContent()
+                            "content": UE.getEditor('editor').getContent(),
+                            "typesId": typesId
                         },
                         //processData: false,
                         //contentType: false,

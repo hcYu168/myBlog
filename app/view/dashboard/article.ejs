@@ -140,6 +140,7 @@
                         <tr>
                             <td><h4>文章编号</h4></td>
                             <td><h4>标题</h4></td>
+                            <td><h4>类型</h4></td>
                             <td><h4>发布时间</h4></td>
                             <td><h4>操作</h4></td>
                         </tr>
@@ -147,6 +148,7 @@
                         <tr> 
                             <td><%= articles[i].id %></td>
                             <td><%= articles[i].title%></td>
+                            <td><%= articles[i].type%></td>
                             <td><%= articles[i].createTime%></td>
                             <td>
                                 <a href="/blog/dashboard/updateArticle/<%= articles[i].id %>">编辑</a>|

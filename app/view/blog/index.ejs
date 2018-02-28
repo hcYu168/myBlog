@@ -82,21 +82,40 @@
             <div class="row">
                 <div class="col-md-8 blog-main">
                     <div class="row">
-                    <%for(var i=0; i< articles.length-2; i++){%>
-                        <div class="col-md-6 col-sm-6">
-                            <article class=" blog-teaser">
-                                <header>
-                                   <img src="<%= articles[i].img%>" alt="">
-                                   <h3><a href="single.html"><%= articles[i].title%></a></h3>
-                                   <span class="meta"><%= articles[i].createTime%></span>
-                                   <hr>
-                                </header>
-                                <div class="body"><%= articles[i].segment%></div>
-                                <div class="clearfix">
-                                   <a href="/blog/article/<%= articles[i].id%>" class="btn btn-clean-one">Read more</a>
-                                </div> 
-                            </article>
-                        </div>
+                    <% if(articles.length-2<0){ %>
+                        <%for(var i=0; i< articles.length; i++){%>
+                            <div class="col-md-6 col-sm-6">
+                                <article class=" blog-teaser">
+                                    <header>
+                                       <img src="<%= articles[i].img%>" alt="">
+                                           <h3><a href="single.html"><%= articles[i].title%></a></h3>
+                                       <span class="meta"><%= articles[i].createTime%></span>
+                                       <hr>
+                                    </header>
+                                    <div class="body"><%= articles[i].segment%></div>
+                                    <div class="clearfix">
+                                       <a href="/blog/article/<%= articles[i].id%>" class="btn btn-clean-one">Read more</a>
+                                    </div> 
+                                </article>
+                            </div>
+                        <% }%>
+                    <% }else{ %>
+                        <%for(var i=0; i< articles.length-2; i++){%>
+                            <div class="col-md-6 col-sm-6">
+                                <article class=" blog-teaser">
+                                    <header>
+                                       <img src="<%= articles[i].img%>" alt="">
+                                       <h3><a href="single.html"><%= articles[i].title%></a></h3>
+                                       <span class="meta"><%= articles[i].createTime%></span>
+                                       <hr>
+                                    </header>
+                                    <div class="body"><%= articles[i].segment%></div>
+                                    <div class="clearfix">
+                                       <a href="/blog/article/<%= articles[i].id%>" class="btn btn-clean-one">Read more</a>
+                                    </div> 
+                                </article>
+                            </div>
+                        <% }%>
                     <% }%>
                     </div>
                     

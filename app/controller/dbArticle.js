@@ -12,13 +12,22 @@ class dbArticleController extends Controller{
 		}else{
 			pageCount = art.length/5 + 1
 		}
-		const articles = await MArticle.findAll({limit, offset});
+		const articles = await MArticle.findAll({
+			limit,
+			offset,
+			include: [{
+				model: app.model.MArticleType,
+				as: 'article_type',
+				attributes:["name"],
+			}]
+		});
 		const articles_detail = [];
 		for(let article of articles){
 			const createTime = await this.ctx.helper.getFullTime(article.created_at);
 			const article_detail = await this.ctx.helper.getAttributes(article, [
 				"id", "img", "title", "segment", "content"]);
 			article_detail.createTime = createTime;
+			article_detail.type = article.article_type.name;
 			articles_detail.push(article_detail);
 		}
 		await this.ctx.render("/dashboard/article", {
@@ -27,70 +36,123 @@ class dbArticleController extends Controller{
 			"pageCount": pageCount
 		});
 	}
+
 	async addArticle(){
-		await this.ctx.render("/dashboard/addArticle");
+		const {MArticleType} = this.ctx.model;
+		const articleTypes = await MArticleType.findAll({});
+		const articleTypes_detail = [];
+		for(let articleType of articleTypes){
+			const articleType_detail = this.ctx.helper.getAttributes(articleType, [
+				"id", "name"]);
+			articleTypes_detail.push(articleType_detail);
+		}
+		await this.ctx.render("/dashboard/addArticle",{
+			"articleType": articleTypes_detail
+		});
 	}
+
 	async updateArticle(){
-		const {MArticle} = this.ctx.model;
+		const {MArticle, MArticleType} = this.ctx.model;
 		const {id} = this.ctx.params;
-		const article = await MArticle.findById(id);
+		const article = await MArticle.findOne({
+			where:{id},
+			include: [{
+				model: app.model.MArticleType,
+				as: "article_type"
+			}]
+		});
+		if(!article){
+			this.ctx.throw(404, "article not found");
+		}
 		const article_detail = await this.ctx.helper.getAttributes(article, [
 			"id", "title", "img", "segment", "content"]);
+		article_detail.typeId = article.article_type.id;
+		article_detail.typeName = article.article_type.name;
+		const articleTypes = await MArticleType.findAll({where:{
+			id:{
+				'$ne': article.article_type.id
+			}
+		}});
+		const articleTypes_detail = [];
+		for(let articleType of articleTypes){
+			const articleType_detail = this.ctx.helper.getAttributes(articleType, [
+				"id", "name"]);
+			articleTypes_detail.push(articleType_detail);
+		}
 		await this.ctx.render("/dashboard/updateArticle", {
-			"article_detail" : article_detail
+			"article_detail" : article_detail,
+			"articleType": articleTypes_detail
 		});
 	}
 	async create(){
-		const {MArticle} = this.ctx.model;
-		const {img, title, segment, content} = this.ctx.request.body;
+		const {ctx} = this;
+		const {MArticle} = ctx.model;
+		const createRule = {
+			img: {type: 'string'},
+			title: {type: 'string'},
+			segment: {type: 'string'},
+			content: {type: 'string'},
+			typeId: {type: 'int'}
+		};
+		ctx.validate(createRule);		
+		const {img, title, segment, content, typesId} = ctx.request.body;
 		const article = await MArticle.findOne({
 			where:{title},
 			attributes: ["title"],
 		});
 		if(article){
-			this.ctx.throw(404, "article already exist");
+			ctx.throw(404, "article already exist");
 		}
-		await MArticle.create({img, title, segment, content});
+		await MArticle.create({img, title, segment, content, typesId});
 		//console.log(file);
 		const updateJson = {
 			"action": "insert article",
 			"info": "ok"
 		};
-		this.ctx.body = updateJson;
+		ctx.body = updateJson;
 	}
 
 	async update(){
-		const {id} = this.ctx.params;
-		const {MArticle} = this.ctx.model;
-		const {title, segment, content} = this.ctx.request.body;
+		const {ctx} = this;
+		const {id} = ctx.params;
+		const {MArticle} = ctx.model;
+		const createRule = {
+			title: {type: "string"},
+			segment: {type: "string"},
+			content: {type: "string"},
+			typesId: {type: "int"},
+		}
+		ctx.validate(createRule);
+		const {title, segment, content, typesId} = ctx.request.body;
 		const article = await MArticle.findById(id);
 		if(!article){
-			this.ctx.throw(404, "article not found");
+			ctx.throw(404, "article not found");
 		}
-		await MArticle.update({title, segment, content},{
+		await MArticle.update({title, segment, content, typesId},{
 			where:{id}
 		})
 		const updateJson = {
 			"action": "update article",
 			"info": "ok"
 		};
-		this.ctx.body = updateJson;
+		ctx.body = updateJson;
 	}
 
 	async destroy(){
-		const {id} = this.ctx.params;
-		const {MArticle} = this.ctx.model;
+		const {ctx} = this;
+		const {id} = ctx.params;
+		const {MArticle} = ctx.model;
 		const article = await MArticle.findById(id);
 		console.log(article);
 		if(!article){
-			this.ctx.throw(404, "article not found");
+			ctx.throw(404, "article not found");
 		}
 		await MArticle.destroy({where:{id}});
 		const updateJson = {
 			"action": "delete article",
 			"info": "ok"
 		};
-		this.ctx.body = updateJson;
+		ctx.body = updateJson;
 	}
 
 	async show(){
@@ -110,13 +172,22 @@ class dbArticleController extends Controller{
 		}else{
 			pageCount = art.length/5 + 1
 		}
-		const articles = await MArticle.findAll({limit, offset});
+		const articles = await MArticle.findAll({
+			limit,
+			offset,
+			include: [{
+				model: app.model.MArticleType,
+				as: "article_type",
+				attributes: ["name"],
+			}]
+		});
 		const articles_detail = [];
 		for(let article of articles){
 			const createTime = await this.ctx.helper.getFullTime(article.created_at);
 			const article_detail = await this.ctx.helper.getAttributes(article, [
 				"id", "img", "title", "segment", "content"]);
 			article_detail.createTime = createTime;
+			article_detail.type = article.article_type.name
 			articles_detail.push(article_detail);
 		}
 		//this.ctx.body = articles_detail;

@@ -25,3 +25,7 @@ exports.passportGithub = {
 	enable: true,
 	package: 'egg-passport-qq'
 }*/
+exports.validate = {
+	enable: true,
+	package: 'egg-validate'
+}

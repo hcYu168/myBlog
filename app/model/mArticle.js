@@ -25,7 +25,7 @@ module.exports = app =>{
 			defaultValue: 0
 		},
 		typesId: {
-			type: STRING, //以后可能会增加多种类别
+			type: INTEGER, //以后可能会增加多种类别
 		}
 	},{
 		paranoid: true,
@@ -33,6 +33,12 @@ module.exports = app =>{
 		charset: 'utf8',
 		collate: 'utf8_general_ci'
 	});
+	MArticle.associate = function(){
+		app.model.MArticle.belongsTo(app.model.MArticleType,{
+			as: "article_type",
+			foreignKey: "typesId"
+		})
+	}
 	MArticle.sync();
 	return MArticle;
 }
