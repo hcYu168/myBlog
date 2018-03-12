@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>xian</title>
+    <title>blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -51,12 +51,13 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
+                <li></li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/xianbrand/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="/blog/dashboard/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -144,8 +145,8 @@
                 const title = $("#title").val();
                 const segment = $("#segment").val();
                 const content = UE.getEditor('editor').getContent();
-                const typesId = $("#articleType option:selected").attr("id");
-                console.log("typesId", typesId);
+                const id = $("#articleType option:selected").attr("id");
+                const typesId = Number(id);
                 formData.append("img", img.files[0]);
                 $.ajax({
                     url: "/blog/uploadImg",
@@ -160,7 +161,8 @@
                                 "img": data.url,
                                 "title": title,
                                 "segment": segment,
-                                "content":content
+                                "content":content,
+                                "typesId": typesId
                             },function(result){
                                 alert("上传成功");
                                 if(result.info){
@@ -173,7 +175,7 @@
                     }
                 });
             });
-        });  
+        });
     </script>
     <!-- /#wrapper -->
     <!-- jQuery -->

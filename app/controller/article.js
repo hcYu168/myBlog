@@ -14,8 +14,8 @@ class articleController extends Controller{
 		const updateJson = {
 			"action": "add comment",
 			"info": "ok",
-			"id": this.ctx.session.id, //userID
-			"name": this.ctx.session.name //authorization_name
+			//"id": this.ctx.session.id, //userID
+			//"name": this.ctx.session.name //authorization_name
 		}
 		this.ctx.body = updateJson
 	}
@@ -34,16 +34,36 @@ class articleController extends Controller{
 			"action": "add replyComment",
 			"info": "ok",
 			"originalId": originalId,
-			"id": this.ctx.session.id,
-			"name": this.ctx.session.name
+			//"id": this.ctx.session.id,
+			//"name": this.ctx.session.name
 		}
 		this.ctx.body = updateJson
 	}
 
 	async show(){
 		const {id} = this.ctx.params; //originalId
-		const {MUser, MArticle, MComment, MAuthorization} = this.ctx.model;
-		const article = await MArticle.findById(id);
+		const {MArticle, MAuthorization} = this.ctx.model;
+		let article = await MArticle.findOne({
+			where:{id},
+			attributes: ["pageView"],
+		});
+		if(!article){
+			this.ctx.throw(404, "article not found");
+		}
+		await MArticle.update({
+			pageView: article.pageView+1
+		},{
+			where:{id}
+		});
+		article = await MArticle.findOne({
+			where:{id},
+			include: [{
+				model: this.ctx.model.MArticleType,
+				as: "article_type",
+				attributes: ["id", "name"]
+			}]
+		});
+		const {WordPress, AboutMe} = await this.ctx.service.articleType.types();
 		if(!article){
 			this.ctx.throw(404, "article not found");
 		}
@@ -51,14 +71,15 @@ class articleController extends Controller{
 			"id", "img", "title", "content", "auth", "pageView"]);
 		const createTime = await this.ctx.helper.getFullTime(article.created_at);
 		article_detail.createTime = createTime;
-		const useres = await MComment.findAll({where:{
+		article_detail.typeName = article.article_type.name;
+		/*const useres = await MComment.findAll({where:{
 			"originalId": id,
-			"originalType": 1,
+			"originalType": article.article_type.id,
 			"rep_userId": {
 				"$eq": null
 			}
-		}});
-		article_detail.commentSum = useres.length;
+		}});*/
+		/*article_detail.commentSum = useres.length;
 		const comment_detail = [];
 		let users_detail = [];
 		//let repUsers_detail = [];
@@ -72,7 +93,7 @@ class articleController extends Controller{
 			const repUseres = await MComment.findAll({
 				where:{
 					"originalId": id,
-					"originalType": 1,
+					"originalType": article.article_type.id,
 					"comment_state": useres[i].id
 				},
 				include:[{
@@ -105,35 +126,56 @@ class articleController extends Controller{
 			}
 			comment_detail.push(users_detail);
 			users_detail = [];
-		}
+		}*/
+		const {recentArticles_detail, wordPressArticles_detail} = await this.ctx.service.sidebar.getSidebarContent(); 
 		await this.ctx.render("/blog/single", {
 			"article": article_detail,
-			"comments": comment_detail,
-			"id": this.ctx.session.id,
-			"name": this.ctx.session.name
+			//"comments": comment_detail,
+			"wordPress": WordPress,
+			"aboutMe": AboutMe,
+			"wordPressArticles": wordPressArticles_detail,
+			"recentArticles": recentArticles_detail
+			//"id": this.ctx.session.id,
+			//"name": this.ctx.session.name
 		});
 	}
 
 	async list(){
 		const {MArticle} = this.ctx.model;
+		const {id} = this.ctx.params; // articleType_id
 		const limit = 10;
 		const offset = 0;
 		const sum = await MArticle.findAll({});
 		const pageCount = Math.ceil(sum.length/10);
-		const articles = await MArticle.findAll({limit, offset});
+		const articles = await MArticle.findAll({
+			limit,
+			offset,
+			include: [{
+				model: this.ctx.model.MArticleType,
+				as: "article_type",
+				where:{id},
+				attributes: ["name"]
+			}]
+		});
 		let articles_detail = [];
 		for(let article of articles){
 			const article_detail = await this.ctx.helper.getAttributes(article, [
-				"id", "img", "title", "segment"]);
+				"id", "img", "title", "segment", "auth", "pageView"]);
 			const createTime = await this.ctx.helper.getFullTime(article.created_at);
 			article_detail.createTime = createTime;
+			article.typeName = article.article_type.name;
 			articles_detail.push(article_detail);
 		}
-		//this.ctx.body = articles_detail;
+		const {WordPress, AboutMe} = await this.ctx.service.articleType.types();
+		const {recentArticles_detail, wordPressArticles_detail} = await this.ctx.service.sidebar.getSidebarContent(); 
 		await this.ctx.render("/blog/articleList", {
 			"articles_detail" : articles_detail,
 			"page": 1,
-			"pageCount": pageCount
+			"pageCount": pageCount,
+			"wordPress": WordPress,
+			"aboutMe": AboutMe,
+			"wordPressArticles": wordPressArticles_detail,
+			"recentArticles": recentArticles_detail
 		});
 	}
 	async pageShow(){
@@ -146,38 +188,35 @@ class articleController extends Controller{
 		}
 		const sum = await MArticle.findAll({});
 		const pageCount = Math.ceil(sum.length/10);
-		const articles = await MArticle.findAll({limit, offset});
+		const articles = await MArticle.findAll({
+			limit, 
+			offset,
+			include: [{
+				model: this.ctx.model.MArticleType,
+				as: "article_type",
+				attributes: ["name"]
+			}]
+		});
 		let articles_detail = [];
 		for(let article of articles){
 			const article_detail = await this.ctx.helper.getAttributes(article, [
-				"id", "img", "title", "segment"]);
+				"id", "img", "title", "segment", "auth", "pageView"]);
 			const createTime = await this.ctx.helper.getFullTime(article.created_at);
 			article_detail.createTime = createTime;
+			article.typeName = article.article_type.name;
 			articles_detail.push(article_detail);
-		} 
+		}
+		const {WordPress, AboutMe} = await this.ctx.service.articleType.types();
+		const {recentArticles_detail, wordPressArticles_detail} = await this.ctx.service.sidebar.getSidebarContent(); 
 		await this.ctx.render("/blog/articleList", {
 			"articles_detail" : articles_detail,
 			"page": parseInt(id),
-			"pageCount": pageCount
+			"pageCount": pageCount,
+			"wordPress": WordPress,
+			"aboutMe": AboutMe,
+			"wordPressArticles": wordPressArticles_detail,
+			"recentArticles": recentArticles_detail
 		});
 	}
 }
 module.exports = articleController;
-
-/*
-评论
-	每个人都能发表评论   userId 不为空， rep_userId 为空  
-	每个人都可以多次进行评论别人，以及回复别人  评论别人 userId rep_userId都不为空
-	评论的模式为 发起评论之后，其他人的所有评论都是在第二行， 
-	如果是对其他人进行评论的话，那也是在下面 就多一个@就好了
-
-	rep_userId 到底是要userid好，还是commentId好
-	如果是userId 那就是每个人对userId 的内容，一目了然 但有个问题
-	比如 A：aaaa   b->A : dasda c->b: asdasdasda 
-	接着b: bbb  那之前c->b 会不会放到B这里来   如果加一个标签标识 应该就可以吧
-
-	如果是commentId 那就是要对别人评论的话，评论的是谁的内容一目了然，
-	但是获取评论的时候，只能获取上一级的，这样的话应该要循环获取，一级获取一级，
-	一直到最上面那一级
-
-*/

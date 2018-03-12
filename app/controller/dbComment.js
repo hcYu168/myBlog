@@ -2,27 +2,31 @@
 const Controller = require("egg").Controller;
 class commentController extends Controller{
 		async show(){
-			const {id} = this.ctx.params //comment_id;
-			const {MComment} = this.ctx.model;
+			const {id} = this.ctx.params;
+			const {MArticle, MComment} = this.ctx.model;
 			const limit = 3;
+			const article = await MArticle.findOne({where:{id}});
+			if(!article){
+				this.ctx.throw(404, "article not found");
+			}
 			const useres = await MComment.findAll({
 				where:{
 					"originalId": id,
-					"originalType": 1,
+					"originalType": article.typesId,
 					"userId": {
 						'$ne': null
 					}
 				},
-				attributes: ["userId", "created_at"],
+				attributes: ["userId", "rep_userId", "created_at"],
 				group: "userId",
 				order: [
-					["created_at", "ASC"]
+					["created_at", "DESC"]
 				]
 			});
 			const commentSum = useres.length;
 			const pageCount = Math.ceil(commentSum/3);
 			const comments = [];
-			const useres_detail = [];
+			let useres_detail = [];
 			for(let i=0; i<commentSum; i++){
 				if(i == 3){
 					break;
@@ -34,7 +38,7 @@ class commentController extends Controller{
 							{"rep_userId": useres[i].rep_userId}
 						],
 						"originalId": id,
-						"originalType": 1,
+						"originalType": article.typesId,
 					}
 				});
 				for(let j=0; j<user_comment.length; j++){
@@ -43,16 +47,12 @@ class commentController extends Controller{
 					const user_comment_detail = this.ctx.helper.getAttributes(user_comment[j],
 						["id", "userId", "rep_userId", "userImg", "userName", "content", "originalId", "originalType"]);
 					user_comment_detail.createTime = createTime;
-					if(user_comment_detail.comment_state == 0){
-						user_comment_detail.comment_state = "置顶";
-					}else if(user_comment_detail.comment_state == 1){
-						user_comment_detail.comment_state = "取消置顶";
-					}
 					useres_detail.push(user_comment_detail);
 				}
 				comments.push(useres_detail);
 				useres_detail = [];
 			}
+			//this.ctx.body = comments;
 			await this.ctx.render("/dashboard/comment", {
 				"comments": comments,
 				"page": 1,
@@ -62,20 +62,24 @@ class commentController extends Controller{
 		}
 		async commentPageShow(){
 			const {id, pageId} = this.ctx.params //comment_id;
-			const {MComment} = this.ctx.model;
+			const {MArticle, MComment} = this.ctx.model;
+			const article = await MArticle.findOne({where:{id}});
+			if(!article){
+				this.ctx.throw(404, "article not found");
+			}
 			const limit = 3;
 			const useres = await MComment.findAll({
 				where:{
 					"originalId": id,
-					"originalType": 1,
+					"originalType": article.typesId,
 					"userId": {
 						'$ne': null
 					}
 				},
-				attributes: ["userId", "created_at"],
+				attributes: ["userId", "rep_userId", "created_at"],
 				group: "userId",
 				order: [
-					["created_at", "ASC"]
+					["created_at", "DESC"]
 				]
 			});
 			const commentSum = useres.length;
@@ -83,7 +87,7 @@ class commentController extends Controller{
 			let current = (pageId-1)*2;
 			let next = (pageId)*2;
 			const comments = [];
-			const useres_detail = [];
+			let useres_detail = [];
 			for(current; current<commentSum; current++){
 				if(current == next){
 					break;
@@ -95,7 +99,7 @@ class commentController extends Controller{
 							{"rep_userId": useres[current].rep_userId}
 						],
 						"originalId": id,
-						"originalType": 1,
+						"originalType": article.typesId,
 					}
 				});
 				for(let j=0; j<user_comment.length; j++){
@@ -104,11 +108,6 @@ class commentController extends Controller{
 					const user_comment_detail = this.ctx.helper.getAttributes(user_comment[j],
 						["id", "userId", "rep_userId", "userImg", "userName", "content", "originalId", "originalType"]);
 					user_comment_detail.createTime = createTime;
-					if(user_comment_detail.comment_state == 0){
-						user_comment_detail.comment_state = "置顶";
-					}else if(user_comment_detail.comment_state == 1){
-						user_comment_detail.comment_state = "取消置顶";
-					}
 					useres_detail.push(user_comment_detail);
 				}
 				comments.push(useres_detail);
@@ -124,11 +123,18 @@ class commentController extends Controller{
 		async destroy(){
 			const {id} = this.ctx.params //comment_id;
 			const {userId, originalId} = this.ctx.request.body;//comment_uId
-			const {MComment} = this.ctx.model;
+			const {MArticle, MComment} = this.ctx.model;
+			const article = await MArticle.findOne({where: {
+				"id": originalId
+			}});
+			console.log("sdasds",id);
+			if(!article){
+				this.ctx.throw(404, "article not found");
+			} 
 			const firstComment = await MComment.findOne({where:{
 				"userId" : userId,
 				"originalId" : originalId,
-				"originalType" : 1,
+				"originalType" : article.typesId,
 			}})
 			console.log("originalId", originalId);
 			//console.log("comment_originalId", firstComment.comment_originalId);

@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>xian</title>
+    <title>blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -55,7 +55,7 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="/xianbrand/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="/blog/dashboard/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -81,18 +81,6 @@
                         <li>
                             <a href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
-                        <!-- <li id="home">
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 首页管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="">轮播图</a>
-                                </li>
-                                <li>
-                                    <a href="">文章列表</a>
-                                </li>
-                            </ul>
-                            /.nav-second-level
-                        </li> -->
                         <li id="content">
                             <a href="#"><i class="fa fa-table fa-fw"></i>文章管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -107,18 +95,6 @@
                                 </li>
                             </ul>
                         </li>
-                        <!-- <li id="auth">
-                             <a href="#"><i class="fa fa-wrench fa-fw"></i> 权限管理<span class="fa arrow"></span></a>
-                             <ul class="nav nav-second-level">
-                                 <li>
-                                     <a href="">权限组设置</a>
-                                 </li>
-                                 <li>
-                                     <a href="">管理员设置</a>
-                                 </li>
-                             </ul>
-                             /.nav-second-level
-                         </li>   --> 
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -143,7 +119,7 @@
                         <p style="margin-left: 5%"><script id="editor" type="text/plain" style="width:1024px;height:500px;"></script></p>
                         <p style="margin-left: 20%">
                             <select id="articleType" style="width: 16%; border-radius:3px; ">
-                                <option id="<%= article_detail.id%>"><%= article_detail.name%></option>
+                                <option id="<%= article_detail.typeId%>"><%= article_detail.typeName%></option>
                                 <% for(let i=0; i< articleType.length; i++){ %>
                                     <option id=<%= articleType[i].id %>><%= articleType[i].name %></option>
                                 <% } %>
@@ -165,20 +141,20 @@
                 var img = '';
                 var img_src = $("#img")[0].src;
                 var new_img = $("#new_img").val();
-                var typesId = $("#articleType option:selected").attr("id");
+                var id = $("#articleType option:selected").attr("id");
+                const typesId = Number(id);
                 if(new_img == ""){
                     img = img_src;
                     $.ajax({
                         url: "/blog/dashboard/article/<%= article_detail.id%>",
                         type: "PUT",
                         data:{
+                            "img": img,
                             "title": $("#title").val(),
                             "segment" : $("#segment").val(),
                             "content": UE.getEditor('editor').getContent(),
                             "typesId": typesId
                         },
-                        //processData: false,
-                        //contentType: false,
                         success: function(data){
                             alert("上传成功");
                             if(data.info){
@@ -190,23 +166,40 @@
                         }
                     });
                 }else{
-                    var img = document.getElementById("new_img");
-                    var formData = new FormData();
-                    formData.append("img", img);
-                    formData.append("title", $("#title").val());
-                    formData.append("segment", $("#segment").val());
-                    formData.append("content", UE.getEditor('editor').getContent());
+                    const formData = new FormData();
+                    const img = document.getElementById("new_img");
+                    const title = $("#title").val();
+                    const segment = $("#segment").val();
+                    const content = UE.getEditor('editor').getContent();
+                    formData.append("img", img.files[0]);
                     $.ajax({
-                        url: "/blog/dashboard/article/<%= article_detail.id%>",
-                        type: "PUT",
+                        url: "/blog/uploadImg",
+                        type: "post",
                         data: formData,
                         processData: false,
                         contentType: false,
                         success: function(data){
-                            alert("上传成功");
-                            if(data.info){
-                                window.location.href = "/blog/dashboard/article";
-                            }
+                            console.log(data);
+                            $.ajax({
+                                url: "/blog/dashboard/article/<%= article_detail.id%>",
+                                type: "PUT",
+                                data:{
+                                    "img": data.url,
+                                    "title": $("#title").val(),
+                                    "segment" : $("#segment").val(),
+                                    "content": UE.getEditor('editor').getContent(),
+                                    "typesId": typesId
+                                },
+                                success: function(data){
+                                    alert("上传成功");
+                                    if(data.info){
+                                        window.location.href = "/blog/dashboard/article";
+                                    }
+                                },
+                                error: function(err){
+                                    console.log(err);
+                                }
+                            });
                         },
                         error: function(err){
                             console.log(err);

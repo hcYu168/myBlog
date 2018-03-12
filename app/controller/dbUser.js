@@ -5,20 +5,23 @@ class dbUserController extends Controller{
 		const {MUser} = this.ctx.model;
 		const limit=5;
 		const offset=0;
-		const userCount = await MUser.findAll();
-		let pageCount;
-		if(userCount.length%5 == 0){
-			pageCount = userCount.length/5
-		}else{
-			pageCount = userCount.length/5 + 1
-		}
-		const useres = await MUser.findAll({limit, offset});
+		const useres = await MUser.findAndCountAll({
+			limit,
+			offset,
+			include: [{
+				model: this.app.model.MAuthorization,
+				as: "auth_user"
+			}]
+		});
+		console.log("useres.count", useres.count);
+		const pageCount = Math.ceil(useres.count/5);
 		const useres_detail = [];
-		for(let user of useres){
+		for(let user of useres.rows){
 			const createTime = await this.ctx.helper.getFullTime(user.created_at);
-			const user_detail = await this.ctx.helper.getAttributes(user, [
-				"id", "name", "password", "phone"]);
+			const user_detail = {};
 			user_detail.createTime = createTime;
+			user_detail.id = user.id;
+			user_detail.name = user.auth_user.name;
 			useres_detail.push(user_detail);
 		}
 		await this.ctx.render("/dashboard/user", {
@@ -61,19 +64,21 @@ class dbUserController extends Controller{
 		}else{
 			offset = (id-1)*limit
 		}
-		const userCount = await MUser.findAll();
-		let pageCount;
-		if(userCount.length%5 == 0){
-			pageCount = userCount.length/5
-		}else{
-			pageCount = userCount.length/5 + 1
-		}
-		const useres = await MUser.findAll({limit, offset});
+		const useres = await MUser.findAndCountAll({
+			limit,
+			offset,
+			include: [{
+				model: this.app.model.MAuthorization,
+				as: "auth_user"
+			}]
+		});
+		let pageCount = Math.ceil(useres.count/5);
 		const useres_detail = [];
-		for(let user of useres){
+		for(let user of useres.rows){
 			const createTime = await this.ctx.helper.getFullTime(user.created_at);
-			const user_detail = await this.ctx.helper.getAttributes(user, [
-				"id", "name", "password", "phone"]);
+			const user_detail = {};
+			user_detail.id = user.id;
+			user_detail.name = user.auth_user.name;
 			user_detail.createTime = createTime;
 			useres_detail.push(user_detail);
 		}

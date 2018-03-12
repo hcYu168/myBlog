@@ -7,7 +7,13 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1516781348308_2736';
 
   // add your config here
-  config.middleware = [];
+  config.middleware = ['userAuth'];
+
+  config.userAuth = {
+    match:[
+      "/blog/dashboard/*",
+    ]
+  }
 
   config.sequelize = {
   	dialect: "mysql",

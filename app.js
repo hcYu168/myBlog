@@ -37,7 +37,7 @@ module.exports = app => {
         ctx.session.id = user.id;
         ctx.session.name = auth.name;
         ctx.session.authId = auth.id;
-        ctx.session.returnTo= "/blog/index";
+        ctx.session.returnTo= "/blog/dashboard/index";
         return user;
     });
 
@@ -45,9 +45,3 @@ module.exports = app => {
         console.log("deserializeUser", user);
   });
 };
-
-/*
-    为什么user和authorization都有了email，
-    user_id还有没有必要存在authorization,
-    如果突然换邮箱了，那就找不到了^^
-*/

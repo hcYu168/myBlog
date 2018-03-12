@@ -16,7 +16,7 @@ class dbArticleController extends Controller{
 			limit,
 			offset,
 			include: [{
-				model: app.model.MArticleType,
+				model: this.ctx.model.MArticleType,
 				as: 'article_type',
 				attributes:["name"],
 			}]
@@ -28,6 +28,7 @@ class dbArticleController extends Controller{
 				"id", "img", "title", "segment", "content"]);
 			article_detail.createTime = createTime;
 			article_detail.type = article.article_type.name;
+			//console.log("article.article_type.name",article.article_type.name);
 			articles_detail.push(article_detail);
 		}
 		await this.ctx.render("/dashboard/article", {
@@ -57,9 +58,9 @@ class dbArticleController extends Controller{
 		const article = await MArticle.findOne({
 			where:{id},
 			include: [{
-				model: app.model.MArticleType,
+				model: this.ctx.model.MArticleType,
 				as: "article_type"
-			}]
+			}]	
 		});
 		if(!article){
 			this.ctx.throw(404, "article not found");
@@ -68,6 +69,7 @@ class dbArticleController extends Controller{
 			"id", "title", "img", "segment", "content"]);
 		article_detail.typeId = article.article_type.id;
 		article_detail.typeName = article.article_type.name;
+		console.log(article_detail.typeName);
 		const articleTypes = await MArticleType.findAll({where:{
 			id:{
 				'$ne': article.article_type.id
@@ -92,7 +94,6 @@ class dbArticleController extends Controller{
 			title: {type: 'string'},
 			segment: {type: 'string'},
 			content: {type: 'string'},
-			typeId: {type: 'int'}
 		};
 		ctx.validate(createRule);		
 		const {img, title, segment, content, typesId} = ctx.request.body;
@@ -117,18 +118,18 @@ class dbArticleController extends Controller{
 		const {id} = ctx.params;
 		const {MArticle} = ctx.model;
 		const createRule = {
+			img: {type: "string"},
 			title: {type: "string"},
 			segment: {type: "string"},
 			content: {type: "string"},
-			typesId: {type: "int"},
 		}
 		ctx.validate(createRule);
-		const {title, segment, content, typesId} = ctx.request.body;
+		const {img, title, segment, content, typesId} = ctx.request.body;
 		const article = await MArticle.findById(id);
 		if(!article){
 			ctx.throw(404, "article not found");
 		}
-		await MArticle.update({title, segment, content, typesId},{
+		await MArticle.update({img, title, segment, content, typesId},{
 			where:{id}
 		})
 		const updateJson = {
@@ -176,7 +177,7 @@ class dbArticleController extends Controller{
 			limit,
 			offset,
 			include: [{
-				model: app.model.MArticleType,
+				model: this.ctx.model.MArticleType,
 				as: "article_type",
 				attributes: ["name"],
 			}]

@@ -2,34 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Contact Me</title>
+    <title>Single Post</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
+    <script type="text/javascript" src= "/public/jquery-1.11.3.min.js"></script>
     <!-- Bootstrap styles -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-  
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css">
 
     <!-- Font-Awesome -->
-    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="/public/css/font-awesome/css/font-awesome.min.css">
+    
     <!-- Google Webfonts -->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet' type='text/css'>
+   <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600|PT+Serif:400,400italic' rel='stylesheet' type='text/css'> -->
 
     <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css" id="theme-styles">
-
+    <link rel="stylesheet" href="/public/css/style.css" id="theme-styles">
     <!--[if lt IE 9]>      
         <script src="js/vendor/google/html5-3.6-respond-1.1.0.min.js"></script>
     <![endif]-->
-    
+    <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+    window.changyan.api.config({
+    appid: 'cytsic0wW',
+    conf: 'prod_267ada9aaed2621a38f8878e591d261a'
+    });
+</script>
 </head>
 <body>
     <header>
         <div class="widewrapper masthead">
             <div class="container">
-                <a href="index.html" id="logo">
-                    <img src="img/logo.png" alt="clean Blog">
+                <a href="/public/index.html" id="logo">
+                    <img src="/public/img/logo.png" alt="clean Blog">
                 </a>
 
                 <div id="mobile-nav-toggle" class="pull-right">
@@ -43,14 +48,17 @@
                         <ul class="nav nav-pills navbar-nav">
                           
                              <li>
-                                <a href="index.html">Home</a>
+                                <a href="/blog/index">首页</a>
                             </li>
                             <li>
-                                <a href="about.html">About</a>
+                                <a href="/blog/article/page/list/<%= wordPress%>">文章</a>
                             </li>
                             <li>
-                                <a href="contact.html">Contact</a>
-                            </li>                 
+                                <a href="/blog/article/page/list/<%= aboutMe%>">关于我</a>
+                            </li>
+                            <li>
+                                <a href="/blog/contact/index">留言</a>
+                            </li>                                          
                         </ul>
                     </div>
                 </nav>        
@@ -61,11 +69,17 @@
         <div class="widewrapper subheader">
             <div class="container">
                 <div class="clean-breadcrumb">
-                    <a href="#">Contact Me</a>
+                    <a href="#">Blog</a>
+                    <!-- <span class="separator">&#x2F;</span>
+                    <a href="#"></a>
+                    <span class="separator">&#x2F;</span>
+                    <a href="#"></a> -->
                 </div>
+
+              
                 <div class="clean-searchbox">
                     <form action="#" method="get" accept-charset="utf-8">
-                        
+                       
                         <input class="searchfield" id="searchbox" type="text" placeholder="Search">
                          <button class="searchbutton" type="submit">
                             <i class="fa fa-search"></i>
@@ -79,23 +93,96 @@
     <div class="widewrapper main">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-md-offset-3 clean-superblock" id="contact">
-                    <h2>Contact</h2>
-                    
-                    <form action="#" method="get" accept-charset="utf-8" class="contact-form">
-                        <input type="text" name="name" id="contact-name" placeholder="Name" class="form-control input-lg">
-                        <input type="email" name="email" id="contact-email" placeholder="Email" class="form-control input-lg">
-                        <textarea rows="10" name="message" id="contact-body" placeholder="Your Message" class="form-control input-lg"></textarea>
-                        <div class="buttons clearfix">
-                            <button type="submit" class="btn btn-xlarge btn-clean-one">Submit</button>
-                        </div>                    
-                    </form>
+                <div class="col-md-8 blog-main">
+                    <article class="blog-post">
+                        <div class="body">
+                           
+                            <div id="SOHUCS" sid="<%= contact%>"></div>
+                        </div>
+                    </article>
+
+                    <aside class="social-icons clearfix">
+                        <h3>Share on </h3> 
+                        <!-- <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a> 
+                        <a href="#"><i class="fa fa-google"></i></a> -->
+                        <!-- JiaThis Button BEGIN -->
+                        <div class="jiathis_style_24x24">
+                            <a class="jiathis_button_qzone"></a>
+                            <a class="jiathis_button_tsina"></a>
+                            <a class="jiathis_button_tqq"></a>
+                            <a class="jiathis_button_weixin"></a>
+                            <a class="jiathis_button_renren"></a>
+                            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+                            <a class="jiathis_counter_style"></a>
+                        </div>
+                        <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+                        <!-- JiaThis Button END --> 
+                    </aside>
                 </div>
-            </div>        
+                <aside class="col-md-4 blog-aside">
+                    
+                    <div class="aside-widget">
+                        <header>
+                            <h3>Featured Post</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <% for(let i=0; i< wordPressArticles.length; i++){ %>
+                                    <li><a href="/blog/article/<%= wordPressArticles[i].id %>"> <%= wordPressArticles[i].title %></a></li>
+                                <% } %>
+                                <!-- <li><a href="">Clean - Responsive HTML5 Template</a></li>
+                                <li><a href="">Responsive Pricing Table</a></li>
+                                <li><a href="">Yellow HTML5 Template</a></li>
+                                <li><a href="">Blackor Responsive Theme</a></li>
+                                <li><a href="">Portfolio Bootstrap Template</a></li>
+                                <li><a href="">Clean Slider Template</a></li> -->
+                            </ul>
+                        </div>
+                    </div>
+                
+                    <div class="aside-widget">
+                        <header>
+                            <h3>Related Post</h3>
+                        </header>
+                        <div class="body">
+                            <ul class="clean-list">
+                                <% for(let i=0; i< recentArticles.length; i++){ %>
+                                    <li><a href="/blog/article/<%= recentArticles[i].id %>"> <%= recentArticles[i].title %></a></li>
+                                <% } %>
+                                <!-- <li><a href="">Blackor Responsive Theme</a></li>
+                                <li><a href="">Portfolio Bootstrap Template</a></li>
+                                <li><a href="">Clean Slider Template</a></li>
+                                <li><a href="">Clean - Responsive HTML5 Template</a></li>
+                                <li><a href="">Responsive Pricing Table</a></li>
+                                <li><a href="">Yellow HTML5 Template</a></li> -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="aside-widget">
+                        <header>
+                            <h3>Tags</h3>
+                        </header>
+                        <div class="body clearfix">
+                            <ul class="tags">
+                                <li><a href="#">HTML5</a></li>
+                                <li><a href="#">CSS3</a></li>
+                                <li><a href="#">COMPONENTS</a></li>
+                                <li><a href="#">TEMPLATE</a></li>
+                                <li><a href="#">PLUGIN</a></li>
+                                <li><a href="#">BOOTSTRAP</a></li>
+                                <li><a href="#">TUTORIAL</a></li>
+                                <li><a href="#">UI/UX</a></li>                            
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
 
-   <footer>
+    <footer>
         <div class="widewrapper footer">
             <div class="container">
                 <div class="row">
@@ -132,13 +219,12 @@
             </div>
         </div>
         <div class="widewrapper copyright">
-                Copyright 2015
+                Copyright 2018 _vae
         </div>
     </footer>
-    
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/modernizr.js"></script>
-
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
+    <script src="/public/js/bootstrap.min.js"></script>
+    <script src="/public/js/modernizr.js"></script>
 </body>
 </html>
+<!-- 这样创建完之后 session id还是用userid name就用authorization表中的name -->

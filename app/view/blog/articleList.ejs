@@ -62,13 +62,13 @@
                                 <a href="/blog/index">首页</a>
                             </li>
                             <li>
-                                <a href="/blog/article/page/list">文章</a>
+                                <a href="/blog/article/page/list/<%= wordPress%>">文章</a>
                             </li>
                             <li>
-                                <a href="about.html">关于我</a>
+                                <a href="/blog/article/page/list/<%= aboutMe%>">关于我</a>
                             </li>
                             <li>
-                                <a href="contact.html">留言</a>
+                                <a href="/blog/contact/index">留言</a>
                             </li>                      
                         </ul>
                     </div>
@@ -101,10 +101,9 @@
                 <div class="col-md-8 blog-main">
                     <div class="row">
                         <div class="col-md-12">
-                            <p style="font-weight: bold;">技术分享</p>
                             <a href="/blog/index" style="float: right; font-size: 12px;">返回首页>></a>
                         </div>
-                        <div class="col-md-12" style="margin-top: -30px; ">
+                        <div class="col-md-12" style="margin-top: -20px; ">
                             <hr style=" border-top:3px ridge #185598;"/>
                         </div>
                     </div>
@@ -116,12 +115,12 @@
 
                         <div class="col-md-8">                       
                                 <div id="title">
-                                    <a><%= articles_detail[i].title%></a>
+                                    <a href="/blog/article/<%= articles_detail[i].id%>"><%= articles_detail[i].title%></a>
                                 </div>
                                 <div style="height: 80px;" id="content"><%= articles_detail[i].segment%></div>
                                 <div id="detail">
                                     <p>发布时间:<%= articles_detail[i].createTime%></p>
-                                    <p style="float: right">浏览次数：11</p>
+                                    <p style="float: right">浏览次数：<%= articles_detail[i].pageView%></p>
                                 </div>
                         </div>
                         <div class="col-md-12"><hr/></div>
@@ -173,12 +172,9 @@
                         </header>
                         <div class="body">
                             <ul class="clean-list">
-                                <li><a href="">Clean - Responsive HTML5 Template</a></li>
-                                <li><a href="">Responsive Pricing Table</a></li>
-                                <li><a href="">Yellow HTML5 Template</a></li>
-                                <li><a href="">Blackor Responsive Theme</a></li>
-                                <li><a href="">Portfolio Bootstrap Template</a></li>
-                                <li><a href="">Clean Slider Template</a></li>
+                                <% for(let i=0; i< wordPressArticles.length; i++){ %>
+                                    <li><a href="/blog/article/<%= wordPressArticles[i].id %>"> <%= wordPressArticles[i].title %></a></li>
+                                <% } %>
                             </ul>
                         </div>
                     </div>
@@ -189,12 +185,9 @@
                         </header>
                         <div class="body">
                             <ul class="clean-list">
-                                <li><a href="">Blackor Responsive Theme</a></li>
-                                <li><a href="">Portfolio Bootstrap Template</a></li>
-                                <li><a href="">Clean Slider Template</a></li>
-                                <li><a href="">Clean - Responsive HTML5 Template</a></li>
-                                <li><a href="">Responsive Pricing Table</a></li>
-                                <li><a href="">Yellow HTML5 Template</a></li>
+                                <% for(let i=0; i< recentArticles.length; i++){ %>
+                                    <li><a href="/blog/article/<%= recentArticles[i].id %>"> <%= recentArticles[i].title %></a></li>
+                                <% } %>
                             </ul>
                         </div>
                     </div>
@@ -258,7 +251,7 @@
             </div>
         </div>
         <div class="widewrapper copyright">
-                Copyright 2015 More Templates <a href="http://www.smallseashell.com/" target="_blank" title="贝壳模板">贝壳模板</a> - Collect from <a href="http://www.smallseashell.com/" title="网页模板" target="_blank">网页模板</a>
+                Copyright 2018 _vae
         </div>
     </footer>
     

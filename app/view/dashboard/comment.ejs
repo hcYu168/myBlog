@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>xian</title>
+    <title>blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -127,11 +127,8 @@
                             <button type="button" class="btn btn-primary" id="reply" onclick= "replyMsg(<%=comments[i][0].originalId %>, <%=comments[i][0].userId %>)">回复</button>
                         </div>
                         <div class="col-sm-1 col-md-1 col-lg-1" style="margin-left: -3%">
-                            <button type="button" class="btn btn-danger" id="delete" onclick= "del(<%=comments[i][0].id %>, <%=comments[i][0].userId %>, <%=comments[i][0].originalId %>)">删除</button>
+                            <button type="button" class="btn btn-danger" id="delete<%=comments[i][0].id %>" onclick= "del(<%=comments[i][0].id %>, <%=comments[i][0].userId %>, <%=comments[i][0].originalId %>)">删除</button>
                             
-                        </div>
-                         <div class="col-sm-1 col-md-1 col-lg-1" style="margin-left: -3%">
-                            <button type="button" class="btn btn-primary" id="stick<%= comments[i][0].userId%>" onclick= "stickCom(<%= comments[i][0].userId%>)"><%=comments[i][0].comment_state %></button>
                         </div>
                     </div>
                     <%if(comments[i].length>1){ %>
@@ -154,7 +151,7 @@
                                     <%= comments[i][j].content %>
                                 </div>
                                 <div class="col-sm-1 col-md-1 col-lg-1" style="margin-left: 2%">
-                                    <p><button type="button" class="btn btn-danger" id="delete" onclick= "del(<%=comments[i][j].id %>, <%= comments[i][0].userId %>, <%=comments[i][0].originalId %>)">删除</button></p>
+                                    <p><button type="button" class="btn btn-danger" id="delete<%=comments[i][j].id %>" onclick= "del(<%=comments[i][j].id %>, <%= comments[i][0].userId %>, <%=comments[i][0].originalId %>)">删除</button></p>
                                 </div>
                             </div>
                         <% } %>
@@ -202,6 +199,27 @@
         </div>
         <!-- /#page-wrapper -->
 
+    <script type="text/javascript">
+        function del(id, userId, originalId){          
+            $.ajax({
+                url: "/blog/dashboard/comment/"+id,
+                type: "DELETE",
+                data:{
+                    userId,
+                    originalId
+                },
+                success: function(data){
+                    alert("删除成功");
+                    if(data.info == "ok"){
+                        window.local.href = "/blog/dashboard/comment/"+data.originalId
+                    }
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            });
+        }
+    </script>
     </div>
     <!-- /#wrapper -->
     <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

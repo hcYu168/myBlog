@@ -9,7 +9,7 @@ module.exports = app => {
 
   app.passport.mount('github');
   //dashboard
-
+  router.all("/ueditor/ue", "ueditor.index");
   //index
   router.resources("dbIndex", "/blog/dashboard/index", app.controller.dbIndex);
 
@@ -22,6 +22,10 @@ module.exports = app => {
 
   //user
   router.resources("dbUser", "/blog/dashboard/user", app.controller.dbUser);
+  router.resources("user", "/blog/dashboard/login", app.controller.user);
+  router.get("/blog/dashboard/regist", "user.regist");
+  router.post("/blog/dashboard/regist", "user.doRegist");
+  router.get("/blog/dashboard/logout", "user.logout");
 
   //articleType
   router.resources("dbArticleType", "/blog/dashboard/articleType", app.controller.dbArticleType);
@@ -37,12 +41,13 @@ module.exports = app => {
   //article
   router.resources("article", "/blog/article", app.controller.article);
   router.post("/blog/article/createReply", "article.createReply");
-  router.get("/blog/article/page/list", "article.list");
+  router.get("/blog/article/page/list/:id", "article.list");
   router.get("/blog/article/page/:id", "article.pageShow");
 
-  //user
-  router.resources("user", "/blog/login", app.controller.user);
-  router.get("/blog/regist", "user.regist");
-  router.post("/blog/regist", "user.doRegist");
-  router.get("/blog/logout", "user.logout");
+  //about me
+  router.resources("about", "/blog/about", app.controller.about);
+
+  //contact
+  router.get("/blog/contact/index", "contact.index");
+
 };

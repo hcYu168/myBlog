@@ -15,7 +15,6 @@ module.exports = app =>{
 		originalId: {type: STRING},
 		originalType: {
 			type: INTEGER,
-			defaultValue: 1,
 		},
 		goods: {
 			type: INTEGER,
@@ -23,7 +22,7 @@ module.exports = app =>{
 		},
 		comment_state: {
 			type: INTEGER,
-			defaultValue: 0, //默认为0，发表评论的id, 而不是回复的id
+			defaultValue: 0, //默认为0，发表评论的id, 而不是回复的id   comment_id
 		},
 
 	},{
@@ -32,12 +31,6 @@ module.exports = app =>{
 		charset: 'utf8',
 		collate: 'utf8_general_ci'
 	});
-	/*MComment.associate = function(){
-		app.model.MComment.hasOne(app.model.MComment,{
-			as: "rep_comment",
-			foreignKey: "rep_userId"
-		})
-	}*/
 	MComment.associate = function(){
 		app.model.MComment.belongsTo(app.model.MUser, {
 			as: "user_comment",
@@ -46,6 +39,10 @@ module.exports = app =>{
 		app.model.MComment.belongsTo(app.model.MUser, {
 			as: "repUser_comment",
 			foreignKey: "rep_userId"
+		});
+		app.model.MComment.belongsTo(app.model.MArticleType, {
+			as: "comment_type",
+			foreignKey: "originalType"
 		});
 	}
 	MComment.sync();

@@ -19,6 +19,12 @@ module.exports = app =>{
 		charset: "utf8",
 		collate: "utf8_general_ci"
 	});
+	MUser.associate = function(){
+		app.model.MUser.hasOne(app.model.MAuthorization, {
+			as: "auth_user",
+			foreignKey: "user_id"
+		});
+	}
 	MUser.sync();
 	return MUser;
 }

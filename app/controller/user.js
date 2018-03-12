@@ -2,7 +2,7 @@
 const Controller = require('egg').Controller;
 class userController extends Controller{
 	async index(){
-		await this.ctx.render("/blog/login");
+		await this.ctx.render("/dashboard/login");
 	}
 	async create(){
 		const {email, password} = this.ctx.request.body;
@@ -34,7 +34,7 @@ class userController extends Controller{
 		this.ctx.body = loginJson;
 	}
 	async regist(){
-		await this.ctx.render("/blog/regist");
+		await this.ctx.render("/dashboard/regist");
 	}
 	async doRegist(){
 		const {email, password, phone} = this.ctx.request.body;
@@ -84,8 +84,9 @@ class userController extends Controller{
 	}
 	async logout(){
 		this.ctx.session.id = null;
-		this.ctx.session.user = null;
-		this.ctx.redirect("/blog/login");
+        this.ctx.session.name = null;
+        this.ctx.session.authId = null;
+		this.ctx.redirect("/blog/dashboard/login");
 	}
 }
 module.exports = userController

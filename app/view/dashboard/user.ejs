@@ -133,29 +133,29 @@
                   <ul class="pagination">
                     <% if(page > 1){%>
                         <li>
-                          <a href="/xianbrand/user/<%= page-1 %>" aria-label="Previous">
+                          <a href="/blog/dashboard/user/<%= page-1 %>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                           </a>
                         </li>
                     <% }else{ %>
                         <li>
-                          <a href="/xianbrand/user/<%= page %>" aria-label="Previous">
+                          <a href="/blog/dashboard/user/<%= page %>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                           </a>
                         </li>
                     <% }%>
                     <%for(var i=1; i<=pageCount; i++){%>
-                        <li><a href="/xianbrand/user/<%= i %>"><%= i %></a></li>
+                        <li><a href="/blog/dashboard/user/<%= i %>"><%= i %></a></li>
                     <% }%>
                     <% if(page < pageCount){%>
                         <li>
-                          <a href="/xianbrand/user/<%= page+1 %>" aria-label="Next">
+                          <a href="/blog/dashboard/user/<%= page+1 %>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                           </a>
                         </li>
                     <% }else{ %>
                         <li>
-                          <a href="/xianbrand/user/<%= page %>" aria-label="Next">
+                          <a href="/blog/dashboard/user/<%= page %>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                           </a>
                         </li>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -21,7 +21,13 @@
     <!--[if lt IE 9]>      
         <script src="js/vendor/google/html5-3.6-respond-1.1.0.min.js"></script>
     <![endif]-->
-    
+    <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+    window.changyan.api.config({
+    appid: 'cytsic0wW',
+    conf: 'prod_267ada9aaed2621a38f8878e591d261a'
+    });
+</script>
 </head>
 <body>
     <header>
@@ -45,13 +51,13 @@
                                 <a href="/blog/index">首页</a>
                             </li>
                             <li>
-                                <a href="/blog/article/page/list">文章</a>
+                                <a href="/blog/article/page/list/<%= wordPress%>">文章</a>
                             </li>
                             <li>
-                                <a href="about.html">关于我</a>
+                                <a href="/blog/article/page/list/<%= aboutMe%>">关于我</a>
                             </li>
                             <li>
-                                <a href="contact.html">留言</a>
+                                <a href="/blog/contact/index">留言</a>
                             </li>                                          
                         </ul>
                     </div>
@@ -65,9 +71,9 @@
                 <div class="clean-breadcrumb">
                     <a href="#">Blog</a>
                     <span class="separator">&#x2F;</span>
-                    <a href="#">Bootstrap</a>
+                    <a href="#"><%= article.typeName%></a>
                     <span class="separator">&#x2F;</span>
-                    <a href="#">HTML Template</a>
+                    <a href="#"><%= article.title%></a>
                 </div>
 
               
@@ -89,17 +95,10 @@
             <div class="row">
                 <div class="col-md-8 blog-main">
                     <article class="blog-post">
-                        <header>
-                           
-                            <div class="lead-image">
-                                <img src="/public/img/single-post.jpg" alt="" class="img-responsive">
-                                
-                            </div>
-                        </header>
                         <div class="body">
                             <h1><%= article.title%></h1>
                             <div class="meta">
-                                <i class="fa fa-user"></i> <%= article.auth%> <i class="fa fa-calendar"></i><%= article.createTime%><i class="fa fa-comments"></i><span class="data"><a href="#comments"><%= article.commentSum%> Comments</a></span>
+                                <i class="fa fa-user"></i> <%= article.auth%> <i class="fa fa-calendar"></i><%= article.createTime%><i class="fa fa-comments"></i><span class="data">
                             </div>
                             <%- article.content%>
                         </div>
@@ -107,10 +106,6 @@
 
                     <aside class="social-icons clearfix">
                         <h3>Share on </h3> 
-                        <!-- <a href="#"><i class="fa fa-facebook"></i></a>
-                        <a href="#"><i class="fa fa-twitter"></i></a> 
-                        <a href="#"><i class="fa fa-google"></i></a> -->
-                        <!-- JiaThis Button BEGIN -->
                         <div class="jiathis_style_24x24">
                             <a class="jiathis_button_qzone"></a>
                             <a class="jiathis_button_tsina"></a>
@@ -122,74 +117,11 @@
                         </div>
                         <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
                         <!-- JiaThis Button END --> 
-                    </aside>
-
+                    </aside>       
                     <aside class="comments" id="comments">
-                        <hr>
-                       <!--  <h2><i class="fa fa-comments"></i> 6 Comments</h2> -->
-                        <%for(var i=0; i< comments.length; i++){%>
-                            <article class="comment">
-                                <header class="clearfix">
-                                    <img src="<%=comments[i][0].userImg %>" alt="A Smart Guy" class="avatar">
-                                    <div class="meta">
-                                        <h3><a href="#"><%=comments[i][0].userName %></a></h3>
-                                        <span class="date">
-                                            <%=comments[i][0].createTime %>
-                                        </span>
-                                        <span class="separator">
-                                            -
-                                        </span>
-                                        
-                                        <button class="reply-link" onclick="rep(<%=comments[i][0].id %>, <%=comments[i][0].userId %>,<%=comments[i][0].comment_state %>)">回复</button>            
-                                    </div>
-                                </header>
-                                <div class="body">
-                                   <%=comments[i][0].content %>
-                                </div>
-                            </article>
-                            <%for(var j=1; j< comments[i].length; j++){%>
-                                <article class="comment reply">
-                                    <header class="clearfix">
-                                        <img src="<%=comments[i][j].userImg %>" alt="A Smart Guy" class="avatar">
-                                        <div class="meta">
-                                            <h3><a href="#"><%=comments[i][j].userName %></a></h3>
-                                            <span class="date">
-                                                <%=comments[i][j].createTime %>
-                                            </span>
-                                            <span class="separator">
-                                                -
-                                            </span>
-                                            
-                                            <button class="reply-link" onclick="rep(<%=comments[i][j].id %>, <%=comments[i][j].userId %>,<%=comments[i][j].comment_state %>)">回复</button>                
-                                        </div>
-                                    </header>
-                                    <% if(comments[i][j].rep_userId == comments[i][0].userId){ %>
-                                        <div class="body">
-                                            <%=comments[i][j].content %>
-                                        </div>
-                                    <% }else if(comments[i][j].rep_userId != comments[i][0].userId){ %>
-                                        <div class="body">
-                                            @<%= comments[i][j].repUser %>: <%=comments[i][j].content %>
-                                        </div>
-                                    <% } %>
-                                </article>
-                            <% }%>
-                        <% }%>
-                    </aside>
-
-                    <aside class="create-comment" id="create-comment">
-                        <hr>    
-                        <h2><i class="fa fa-pencil"></i> Add Comment</h2>
-
-                        <form> <!-- action="#" method="get"   accept-charset="utf-8" -->
-                            <div class="row">
-                            <textarea rows="10" name="message" id="commentBody" placeholder="Your Message" class="form-control input-lg"></textarea>
-
-                            <div class="buttons clearfix">
-                                <input type="button" id="subButton" class="btn btn-xlarge btn-clean-one" value="submit" />
-                            </div>
-                        </form>
-                    </aside>
+                       <hr>
+                       <div id="SOHUCS" sid="<%= article.id%>"></div>
+                   </aside> 
                 </div>
                 <aside class="col-md-4 blog-aside">
                     
@@ -199,12 +131,9 @@
                         </header>
                         <div class="body">
                             <ul class="clean-list">
-                                <li><a href="">Clean - Responsive HTML5 Template</a></li>
-                                <li><a href="">Responsive Pricing Table</a></li>
-                                <li><a href="">Yellow HTML5 Template</a></li>
-                                <li><a href="">Blackor Responsive Theme</a></li>
-                                <li><a href="">Portfolio Bootstrap Template</a></li>
-                                <li><a href="">Clean Slider Template</a></li>
+                                <% for(let i=0; i< wordPressArticles.length; i++){ %>
+                                    <li><a href="/blog/article/<%= wordPressArticles[i].id %>"> <%= wordPressArticles[i].title %></a></li>
+                                <% } %>
                             </ul>
                         </div>
                     </div>
@@ -215,12 +144,9 @@
                         </header>
                         <div class="body">
                             <ul class="clean-list">
-                                <li><a href="">Blackor Responsive Theme</a></li>
-                                <li><a href="">Portfolio Bootstrap Template</a></li>
-                                <li><a href="">Clean Slider Template</a></li>
-                                <li><a href="">Clean - Responsive HTML5 Template</a></li>
-                                <li><a href="">Responsive Pricing Table</a></li>
-                                <li><a href="">Yellow HTML5 Template</a></li>
+                                <% for(let i=0; i< recentArticles.length; i++){ %>
+                                    <li><a href="/blog/article/<%= recentArticles[i].id %>"> <%= recentArticles[i].title %></a></li>
+                                <% } %>
                             </ul>
                         </div>
                     </div>
@@ -246,7 +172,6 @@
             </div>
         </div>
     </div>
-
     <footer>
         <div class="widewrapper footer">
             <div class="container">
@@ -284,86 +209,70 @@
             </div>
         </div>
         <div class="widewrapper copyright">
-                Copyright 2015
+                Copyright 2018 _vae
         </div>
     </footer>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">                 
-                    <div class="form-group">
-                        <label >回复：</label>
-                        <textarea class="form-control" id="repContent"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
-                    <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>提交</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   <!--  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+       <div class="modal-dialog" role="document">
+           <div class="modal-content">
+               <div class="modal-body">                 
+                   <div class="form-group">
+                       <label >回复：</label>
+                       <textarea class="form-control" id="repContent"></textarea>
+                   </div>
+               </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                   <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>提交</button>
+               </div>
+           </div>
+       </div>
+   </div> -->
     <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
     <script src="/public/js/bootstrap.min.js"></script>
     <script src="/public/js/modernizr.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $("#subButton").click(function(){
-                const id = "<%= id%>";
-                const userName = "<%= name%>"
-                if(id == null || id == ""){
-                    window.location.href = "/blog/login"
-                }else{
-                    //const userId = $("#commentId").val();
-                    const content = $("#commentBody").val();
-                    const originalId = "<%= article.id%>";
-                    $.post("/blog/article",{
-                        "userId" : id,
-                        "userName": userName,
-                        "content": content,
-                        "originalId": originalId
-                    }, function(res, err){
-                        if(res.info =="ok"){
-                            window.location.href= "/blog/article/<%= article.id%>"
-                        }
-                        if(err){
-                            console.log(err);
-                        }
-                    })
-                }
-            });
-        });
-        function rep(id, rep_userId, comment_state){
-            $("#myModal").modal();
-            $("#btn_submit").click(function(){
-                const userId = "<%= id%>";
-                const originalId = "<%= article.id%>";
-                const userName = "<%= name%>";
-                if(userId == null || userId == ""){
-                    window.location.href = "/blog/login"
-                }else{
-                    if(comment_state == 0){
-                        comment_state = id
-                    }
-                    const content = $("#repContent").val();
-                    $.post("/blog/article/createReply", {
-                        "userId": userId,//由session知道userId
-                        "rep_userId": rep_userId,
-                        "userName": userName,
-                        "content": content,
-                        "originalId": originalId,
-                        "comment_state": comment_state,
-                    }, function(data){
-                        if(data.info == "ok"){
-                            window.location.href="/blog/article/"+data.originalId;
-                        }
-                    })
-                }
-            });
-        }
-    </script>
-
+   <!--  <script type="text/javascript">
+       $(document).ready(function(){
+           $("#subButton").click(function(){
+               const content = $("#commentBody").val();
+               const originalId = "<%= article.id%>";
+               $.post("/blog/article",{
+                   "userId" : id,
+                   "userName": userName,
+                   "content": content,
+                   "originalId": originalId
+               }, function(res, err){
+                   if(res.info =="ok"){
+                       window.location.href= "/blog/article/<%= article.id%>"
+                   }
+                   if(err){
+                       console.log(err);
+                   }
+               })
+           });
+       });
+       function rep(id, rep_userId, comment_state){
+           $("#myModal").modal();
+           $("#btn_submit").click(function(){
+               const originalId = "<%= article.id%>";
+               if(comment_state == 0){
+                   comment_state = id
+               }
+               const content = $("#repContent").val();
+               $.post("/blog/article/createReply", {
+                   "userId": userId,//由session知道userId
+                   "rep_userId": rep_userId,
+                   "userName": userName,
+                   "content": content,
+                   "originalId": originalId,
+                   "comment_state": comment_state,
+               }, function(data){
+                   if(data.info == "ok"){
+                       window.location.href="/blog/article/"+data.originalId;
+                   }
+               })
+           });
+       }
+   </script> -->
 </body>
 </html>
-<!-- 这样创建完之后 session id还是用userid name就用authorization表中的name -->

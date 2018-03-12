@@ -15,30 +15,14 @@ class sFileService extends Service{
 	    let part;
 	    while ((part = await parts()) != null) {
 	      if (part.length) {
-	        // arrays are busboy fields
-	        /*console.log("1111111111111");
-	        console.log('field: ' + part[0]);
-	        console.log('value: ' + part[1]);
-	        console.log('valueTruncated: ' + part[2]);
-	        console.log('fieldnameTruncated: ' + part[3]);*/
 	        info[part[0]] = part[1];
 	      } else {
 	        if (!part.filename) {
-	          // user click `upload` before choose a file,
-	          // `part` will be file stream, but `part.filename` is empty
-	          // must handler this, such as log error.
 	          return;
 	        }
-	        /*console.log("2222222222222");
-	        // otherwise, it's a stream
-	        console.log('field: ' + part.fieldname);
-	        console.log('filename: ' + part.filename);
-	        console.log('encoding: ' + part.encoding);
-	        console.log('mime: ' + part.mime);*/
 	        info[part.fieldname] = part.filename;
 	        const picPath = path.join(__dirname,"../public/upload/")+part.filename;
 	        try {
-	          //result = await ctx.oss.put('egg-multipart-test/' + part.filename, part);
 	          part.pipe(fs.createWriteStream(picPath));
 	        } catch (err) {
 	          await sendToWormhole(part);
@@ -99,17 +83,18 @@ class sFileService extends Service{
 	          	bucket: "blogt"
         	});
 	        try {
-	        	const picPath = path.join(__dirname,"../public/upload/")+part.filename;
+	        	const picPath = path.join(__dirname,"../public/upload/")+(new Date()).getTime()+'_'+part.filename;
 				part.pipe(fs.createWriteStream(picPath));
 	        	result = co(function* () {
 				   // use 'chunked encoding'
-					const stream = fs.createReadStream(path.join(__dirname,"../public/upload/")+part.filename);
+					const stream = fs.createReadStream(picPath);
 					//fs.pipe(stream);
 					const result2 = yield client.putStream(part.filename, stream);
 					return result2;
 				}).catch(function (err) {
 				    console.log(err);
 				});
+				await fs.unlinkSync(picPath);
 	        } catch (err) {
 	          await sendToWormhole(part);
 	          throw err;
