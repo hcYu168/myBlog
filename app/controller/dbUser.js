@@ -27,7 +27,8 @@ class dbUserController extends Controller{
 		await this.ctx.render("/dashboard/user", {
 			"useres": useres_detail,
 			"page": 1,
-			"pageCount": pageCount
+			"pageCount": pageCount,
+			"name": this.ctx.session.name
 		});
 	}
 
@@ -85,7 +86,8 @@ class dbUserController extends Controller{
 		await this.ctx.render("/dashboard/user", {
 			"useres": useres_detail,
 			"page": id,
-			"pageCount": pageCount
+			"pageCount": pageCount,
+			"name": this.ctx.session.name
 		});
 	}
 

@@ -34,7 +34,8 @@ class dbArticleController extends Controller{
 		await this.ctx.render("/dashboard/article", {
 			"articles": articles_detail,
 			"page": 1,
-			"pageCount": pageCount
+			"pageCount": pageCount,
+			"name": this.ctx.session.name
 		});
 	}
 
@@ -48,7 +49,8 @@ class dbArticleController extends Controller{
 			articleTypes_detail.push(articleType_detail);
 		}
 		await this.ctx.render("/dashboard/addArticle",{
-			"articleType": articleTypes_detail
+			"articleType": articleTypes_detail,
+			"name": this.ctx.session.name
 		});
 	}
 
@@ -83,7 +85,8 @@ class dbArticleController extends Controller{
 		}
 		await this.ctx.render("/dashboard/updateArticle", {
 			"article_detail" : article_detail,
-			"articleType": articleTypes_detail
+			"articleType": articleTypes_detail,
+			"name": this.ctx.session.name
 		});
 	}
 	async create(){
@@ -195,7 +198,8 @@ class dbArticleController extends Controller{
 		await this.ctx.render('/dashboard/article', {
 			"articles": articles_detail,
 			"page": id,
-			"pageCount":pageCount
+			"pageCount":pageCount,
+			"name": this.ctx.session.name
 		});
 	}
 	async getSignature(){

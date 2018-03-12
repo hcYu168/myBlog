@@ -48,6 +48,12 @@ module.exports = appInfo => {
     accessKeyId:"LTAIU5bEfWxPzy6a",
     accessKeySecret: "phkO495bgSJyYOr0LP25O165kpwr5A",
   }
- 
+
+  config.session = {
+    key: "rainchapter",
+    maxAge: 5*3600*1000,
+    httpOnly: true,
+    encrypt: true
+  }
   return config;
 };

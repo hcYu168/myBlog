@@ -12,6 +12,7 @@ class dbArticleTypeController extends Controller{
 		}
 		await this.ctx.render("/dashboard/articleType", {
 			"types_detail" : types_detail,
+			"name": this.ctx.session.name
 		});
 	}
 	async create(){

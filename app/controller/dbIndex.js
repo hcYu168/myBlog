@@ -34,7 +34,8 @@ class dbIndexController extends Controller{
 		await this.ctx.render("/dashboard/article", {
 			"articles": articles_detail,
 			"page": 1,
-			"pageCount": pageCount
+			"pageCount": pageCount,
+			"name": this.ctx.session.name
 		});
 	}
 }
