@@ -118,7 +118,7 @@
                         <p style="margin-left: 20%">文段：</p>
                         <p style="margin-left: 23%"><textarea id="segment" name="segment" rows="5" cols="50"></textarea></p>
                         <p style="margin-left: 5%"><script id="editor" type="text/plain" style="width:1024px;height:500px;"></script></p>
-                        <p style="margin-left: 20%">
+                        <p style="margin-left: 20%">请选择类型：
                             <select id="articleType" style="width: 16%; border-radius:3px; ">
                                 <option>请选择</option>
                                 <% for(let i=0; i< articleType.length; i++){ %>
@@ -147,33 +147,37 @@
                 const content = UE.getEditor('editor').getContent();
                 const id = $("#articleType option:selected").attr("id");
                 const typesId = Number(id);
-                formData.append("img", img.files[0]);
-                $.ajax({
-                    url: "/blog/uploadImg",
-                    type: "post",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(data){
-                        console.log(data);
-                        $.post("/blog/dashboard/article",
-                            {
-                                "img": data.url,
-                                "title": title,
-                                "segment": segment,
-                                "content":content,
-                                "typesId": typesId
-                            },function(result){
-                                alert("上传成功");
-                                if(result.info){
-                                    window.location.href = "/blog/dashboard/article";
-                                }
-                        });
-                    },
-                    error: function(err){
-                        console.log(err);
-                    }
-                });
+                if(id==null || id== 'undefined' || id==""){
+                    alert('请选择类型');
+                }else{    
+                    formData.append("img", img.files[0]);
+                    $.ajax({
+                        url: "/blog/uploadImg",
+                        type: "post",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data){
+                            console.log(data);
+                            $.post("/blog/dashboard/article",
+                                {
+                                    "img": data.url,
+                                    "title": title,
+                                    "segment": segment,
+                                    "content":content,
+                                    "typesId": typesId
+                                },function(result){
+                                    alert("上传成功");
+                                    if(result.info){
+                                        window.location.href = "/blog/dashboard/article";
+                                    }
+                            });
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    });
+                }
             });
         });
     </script>

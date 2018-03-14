@@ -8,6 +8,8 @@ class userController extends Controller{
 		const {email, password} = this.ctx.request.body;
 		const {MUser, MAuthorization} = this.ctx.model;
 		const findUser = await MUser.findOne({where:{email}});
+		console.log("email", email);
+		console.log("22", findUser);
 		if(!findUser){
 			this.ctx.throw(404, "user not found")
 		}
