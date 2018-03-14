@@ -26,14 +26,19 @@ module.exports = appInfo => {
 
 	config.security = {
     domainWhiteList: [
-        'http://localhost:7001',
-        'http://127.0.0.1:7001'
+        'http://localhost:8080',
+        'http://127.0.0.1:8080'
       ],
 		csrf:{
 			enable:false
 		}
 	};
 
+  config.cluster = {
+    listen:{
+      port:8080
+    }
+  }
 	config.view = {
 		defaultViewEngine: "ejs",
 		defaultExtension: ".ejs"
