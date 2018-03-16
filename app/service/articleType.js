@@ -19,5 +19,16 @@ class articleTypeService extends Service{
 		const AboutMe = aboutMe.id;
 		return { WordPress, AboutMe};
 	}
+
+	async show(){
+		const {MArticleType} = this.ctx.model;
+		const articleTypes = await MArticleType.findAll({});
+		const articleTypes_detail = [];
+		for(let articleType of articleTypes){
+			const articleType_detail = await this.ctx.helper.getAttributes(articleType, ["id", "name"]);
+			articleTypes_detail.push(articleType_detail);
+		}
+		return {articleTypes_detail};
+	}
 }
 module.exports = articleTypeService;

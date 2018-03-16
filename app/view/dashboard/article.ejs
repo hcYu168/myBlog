@@ -110,6 +110,16 @@
                 <div class="col-lg-12">
                      <button class="btn btn-large btn-primary" type="button" id="add">+ 新建</button>
                 </div>
+                <div class="col-lg-12">
+                    <p>请选择类型:
+                        <select id="articleType">
+                            <% for(let i=0; i< articleType.length; i++){ %>
+                                <option id= '<%= articleType[i].id %>'><%= articleType[i].name %></option>
+                            <% } %>
+                        </select>
+                        <button class="btn btn-large btn-primary" type="button" id="search">搜索</button>
+                    </p>
+                </div>
             </div>
             <div class="row" style="margin-top: 2%;">
                 <div class="col-lg-8">
@@ -196,6 +206,13 @@
                         console.log(err);
                     }
                 });
+            })
+            $("#search").click(function(){
+                const id = $("#articleType option:selected").attr("id");
+                /*$.get("/blog/dashboard/searchArticle/"+id,function(data){
+                    console.log("ok");
+                });*/
+                window.location.href= "/blog/dashboard/searchArticle/"+id
             })
         });
     </script>

@@ -23,19 +23,22 @@ class dbArticleController extends Controller{
 		});
 		const articles_detail = [];
 		for(let article of articles){
-			const createTime = await this.ctx.helper.getFullTime(article.created_at);
-			const article_detail = await this.ctx.helper.getAttributes(article, [
+			const createTime = this.ctx.helper.getFullTime(article.created_at);
+			const article_detail = this.ctx.helper.getAttributes(article, [
 				"id", "img", "title", "segment", "content"]);
 			article_detail.createTime = createTime;
 			article_detail.type = article.article_type.name;
 			//console.log("article.article_type.name",article.article_type.name);
 			articles_detail.push(article_detail);
 		}
+		const {articleTypes_detail} = await this.ctx.service.articleType.show();
+		console.log(articleTypes_detail);
 		await this.ctx.render("/dashboard/article", {
 			"articles": articles_detail,
 			"page": 1,
 			"pageCount": pageCount,
-			"name": this.ctx.session.name
+			"name": this.ctx.session.name,
+			"articleType": articleTypes_detail,
 		});
 	}
 
@@ -187,20 +190,69 @@ class dbArticleController extends Controller{
 		});
 		const articles_detail = [];
 		for(let article of articles){
-			const createTime = await this.ctx.helper.getFullTime(article.created_at);
-			const article_detail = await this.ctx.helper.getAttributes(article, [
+			const createTime =  this.ctx.helper.getFullTime(article.created_at);
+			const article_detail = this.ctx.helper.getAttributes(article, [
 				"id", "img", "title", "segment", "content"]);
 			article_detail.createTime = createTime;
 			article_detail.type = article.article_type.name
 			articles_detail.push(article_detail);
 		}
-		//this.ctx.body = articles_detail;
+		const {articleTypes_detail} = await this.ctx.service.articleType.show();
 		await this.ctx.render('/dashboard/article', {
 			"articles": articles_detail,
 			"page": id,
 			"pageCount":pageCount,
-			"name": this.ctx.session.name
+			"name": this.ctx.session.name,
+			"articleType": articleTypes_detail
 		});
+	}
+
+	async search(){
+		const {id} = this.ctx.params;
+		console.log("ds",id);
+		const {MArticle, MArticleType} = this.ctx.model;
+		const limit=5;
+		const offset=0;
+		const articles = await MArticle.findAll({
+			where: {"typesId":id},
+			limit,
+			offset,
+			include:[{
+				model: MArticleType,
+				as: "article_type",
+			}]
+		});
+		if(!articles){
+			this.ctx.throw(404, "该类型文章不存在");
+		}
+		let pageCount;
+		if(articles.length%5 == 0){
+			pageCount = articles.length/5
+		}else{
+			pageCount = articles.length/5 + 1
+		}
+		const articles_detail = [];
+		for(let article of articles){
+			const createTime = this.ctx.helper.getFullTime(article.created_at);
+			console.log("createTime", createTime);
+			const article_detail = this.ctx.helper.getAttributes(article, [
+				"id", "img", "title", "segment", "content"]);
+			article_detail.createTime = createTime;
+			article_detail.type = article.article_type.name;
+			console.log("article_detail.type", article_detail.type);
+			//console.log("article.article_type.name",article.article_type.name);
+			articles_detail.push(article_detail);
+		}
+		const {articleTypes_detail} = await this.ctx.service.articleType.show();
+		//this.ctx.body = articles_detail;
+		await this.ctx.render("/dashboard/article", {
+			"articles": articles_detail,
+			"page": 1,
+			"pageCount": pageCount,
+			"name": this.ctx.session.name,
+			"articleType": articleTypes_detail,
+		});
+
 	}
 	async getSignature(){
 		console.log("getSignature");

@@ -31,11 +31,14 @@ class dbIndexController extends Controller{
 			//console.log("article.article_type.name",article.article_type.name);
 			articles_detail.push(article_detail);
 		}
+		const {articleTypes_detail} = await this.ctx.service.articleType.show();
+		console.log("dsad", articleTypes_detail);
 		await this.ctx.render("/dashboard/article", {
 			"articles": articles_detail,
 			"page": 1,
 			"pageCount": pageCount,
-			"name": this.ctx.session.name
+			"name": this.ctx.session.name,
+			"articleType": articleTypes_detail
 		});
 	}
 }

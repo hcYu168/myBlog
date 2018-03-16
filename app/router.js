@@ -17,6 +17,7 @@ module.exports = app => {
   router.resources("dbArticle", "/blog/dashboard/article", app.controller.dbArticle);
   router.get("/blog/dashboard/addArticle", "dbArticle.addArticle");
   router.get("/blog/dashboard/updateArticle/:id", "dbArticle.updateArticle");
+  router.get("/blog/dashboard/searchArticle/:id", "dbArticle.search");
   router.post("/blog/getSignature", "dbArticle.getSignature");
   router.post("/blog/uploadImg", "dbArticle.uploadImg");
 
