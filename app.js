@@ -12,8 +12,9 @@ module.exports = app => {
         });
         if(!auth){
             //如果不存在就注册
-            const newUser = await ctx.service.user.register(user);
-            return newUser;
+            //const newUser = await ctx.service.user.register(user);
+            this.ctx.throw(404, "user not found");
+            return null;
         }else{
             const existsUser = await ctx.model.MUser.findOne({where:{id: auth.user_id }});
             //console.log("existsUser", existsUser);
