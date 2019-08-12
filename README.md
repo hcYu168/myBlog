@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# myBlog
-=======
 # blog
 
 
@@ -34,4 +31,3 @@ $ npm stop
 
 
 [egg]: https://eggjs.org
->>>>>>> first commit
