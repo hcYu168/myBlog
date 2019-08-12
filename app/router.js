@@ -7,6 +7,8 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
+  router.post('/hook', controller.home.hook);
+
   app.passport.mount('github');
   //dashboard
   router.all("/ueditor/ue", "ueditor.index");

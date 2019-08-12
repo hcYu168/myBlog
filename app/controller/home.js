@@ -6,6 +6,10 @@ class HomeController extends Controller {
   async index() {
     this.ctx.redirect("/blog/index");
   }
+
+  async hook() {
+    ctx.body = 200;
+  }
 }
 
 module.exports = HomeController;
