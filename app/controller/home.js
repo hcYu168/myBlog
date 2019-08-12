@@ -8,7 +8,7 @@ class HomeController extends Controller {
   }
 
   async hook() {
-    ctx.body = 200;
+    this.ctx.body = 200;
   }
 }
 
