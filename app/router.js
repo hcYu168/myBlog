@@ -7,7 +7,7 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
-  router.post('/hook', controller.home.hook);
+  router.all('/hook', controller.home.hook);
 
   app.passport.mount('github');
   //dashboard
