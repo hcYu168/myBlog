@@ -8,7 +8,7 @@ class HomeController extends Controller {
   }
 
   async hook() {
-    console.log('a', this.ctx.request.body);
+    // console.log('a', this.ctx.request.body);
     this.ctx.body = 200;
   }
 }
