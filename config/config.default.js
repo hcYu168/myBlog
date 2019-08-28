@@ -26,10 +26,7 @@ module.exports = appInfo => {
   };
 
 	config.security = {
-    domainWhiteList: [
-        'http://localhost:8080',
-        'http://127.0.0.1:8080'
-      ],
+    domainWhiteList: [],
 		csrf:{
 			enable:false
 		}
@@ -46,13 +43,13 @@ module.exports = appInfo => {
 	}  
 
   config.passportGithub = {
-    key: '497eac76fa96a95ea854',
-    secret: 'b5ca765f41b54d604a5fc73c6c55160ccc89f2e3'
+    key: '',
+    secret: ''
   }
 
   config.aliyun = {
-    accessKeyId:"LTAIU5bEfWxPzy6a",
-    accessKeySecret: "phkO495bgSJyYOr0LP25O165kpwr5A",
+    accessKeyId: '',
+    accessKeySecret: '',
   }
 
   config.session = {
