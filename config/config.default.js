@@ -15,16 +15,6 @@ module.exports = appInfo => {
     ]
   }
 
-  config.sequelize = {
-  	dialect: "mysql",
-  	database: "blog",
-  	host: "localhost",
-  	port: "3306",
-  	username: "root",
-  	password: "root",
-    timezooe: "+08:00"
-  };
-
 	config.security = {
     domainWhiteList: [],
 		csrf:{
